@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        /* .parent {
+            position: relative;
+            height: 200px;
+            border: 1px solid #000;
+        }
+
+        .child {
+            position: absolute;
+            border: 1px solid #000;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            width: 500px;
+        } */
+
+        /* 
+        垂直居中
+        position: absolute;
+        border: 1px solid #000;
+        top: 50%;
+        transform: translateY(-50%);
+        */
+
+        .left {
+            float: left;
+            width: 200px;
+            background-color: rebeccapurple;
+            height: 200px;
+        }
+
+        .right {
+            margin-left: 200px;
+            background-color: red;
+            height: 200px;
+        }
+        .parent{
+            height: 300px;
+            /* display: flex;
+            flex: 1;
+            flex-direction: column;
+            background-color: deeppink; */
+        }
+        .child{
+            display: inline-flex;
+            flex: 1;
+            flex-direction: column;
+            height: 100%;
+            width: 600px;
+            background-color: pink;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="parent">
+        <div class="child">
+            自动高度百分百
+        </div>
+    </div>
+    <div class="left"></div>
+    <div class="right"></div>
+</body>
+
+</html>
