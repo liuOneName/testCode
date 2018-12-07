@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>图片懒加载</title>
+    <style>
+        .container {
+            margin: 10px;
+            height: 400px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="https://cdn.liaoxuefeng.com/cdn/static/themes/default/img/loading.gif" data-src='./imgs/1.jpg'>
+    </div>
+    <div class="container">
+        <img src="https://cdn.liaoxuefeng.com/cdn/static/themes/default/img/loading.gif" data-src='./imgs/2.jpg'>
+    </div>
+    <div class="container">
+        <img src="https://cdn.liaoxuefeng.com/cdn/static/themes/default/img/loading.gif" data-src='./imgs/3.jpg'>
+    </div>
+    <div class="container">
+        <img src="https://cdn.liaoxuefeng.com/cdn/static/themes/default/img/loading.gif" data-src='./imgs/4.jpg'>
+    </div>
+    <div class="container">
+        <img src="https://cdn.liaoxuefeng.com/cdn/static/themes/default/img/loading.gif" data-src='./imgs/5.jpg'>
+    </div>
+    <div class="container">
+        <img src="https://cdn.liaoxuefeng.com/cdn/static/themes/default/img/loading.gif" data-src='./imgs/6.jpg'>
+    </div>
+    <div class="container">
+        <img src="https://cdn.liaoxuefeng.com/cdn/static/themes/default/img/loading.gif" data-src='./imgs/7.jpg'>
+    </div>
+    <div class="container">
+        <img src="https://cdn.liaoxuefeng.com/cdn/static/themes/default/img/loading.gif" data-src='./imgs/8.jpg'>
+    </div>
+
+    <script>
+        //实现图片懒加载
+        window.onload = function () {
+            //获取所有有data-src属性的图片
+            var imgs = [...document.querySelectorAll('img[data-src]')];
+            var scroll = function () {
+                // 获取可视化屏幕的高度 window.innerHeight 标准浏览器及IE9+ || document.documentElement.clientHeight 标准浏览器及低版本IE标准模式 || document.body.clientHeight
+                var screenHeight = window.innerHeight;
+                var scrollHeight = document.documentElement.scrollTop;
+                // var eleHeight = scrollHeight + img.offsetTop;
+                var arr = [];
+                imgs.forEach(function (img, index) {
+                    var eleHeight = img.offsetTop;
+                    if (eleHeight - scrollHeight < screenHeight) {
+                        img.setAttribute('src', img.getAttribute('data-src'));
+                        console.log('加载', img.getAttribute('data-src'), img);
+                        arr.unshift(index);
+                    }
+                })
+                if (arr.length < 1) return;
+                console.log(arr);
+                arr.forEach(function (index) {
+                    // console.log(imgs);
+                    imgs.splice(index, 1);
+                });
+            }
+            window.addEventListener('scroll', function () {
+                scroll();
+            });
+            scroll();
+        }
+    </script>
+
+    <!-- 原生实现双向绑定 -->
+    <div id="app">
+        <input type="text" id="txt">
+        <p id="show-txt"></p>
+    </div>
+    <script>
+        var obj = {}
+        Object.defineProperty(obj, 'txt', {
+            get: function () {
+                return this;
+            },
+            set: function (newValue = '') {
+                document.getElementById('txt').value = newValue
+                document.getElementById('show-txt').innerHTML = newValue
+            }
+        })
+        
+    </script>
+
+    <!-- ES6 proxy 实现 -->
+    <div class="proxy">
+        <input type="text" class="proxy-input">
+        <p class="proxy-p"></p>
+    </div>
+    <script>
+        var obj2 = new Proxy({}, {
+            get: function(target, key, receiver){
+                console.log(target, key, receiver)
+            },
+            set: function(target, key, value, receiver){
+                console.log(target, key, value, receiver);
+                document.querySelector('.proxy-input').value = value;
+                document.querySelector('.proxy-p').innerHTML = value;
+            }
+        })
+        // obj2.name;
+        // obj2.name = 'Tom';
+        //这儿触发 两种双向绑定的事件
+        document.addEventListener('keyup', function (e) {
+            if(e.target.id == 'txt'){
+                obj.txt = e.target.value
+            } else if(e.target.className == 'proxy-input') {
+                obj2.name = e.target.value;
+            }
+        })
+    </script>
+</body>
+
+</html>

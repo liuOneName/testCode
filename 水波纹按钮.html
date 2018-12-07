@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>水波纹按钮</title>
+    <style>
+        .btn {
+            border: none;
+            background-color: blueviolet;
+            padding: 50px 150px;
+            cursor: pointer;
+            outline: none;
+            box-shadow: none;
+            color: #fff;
+            border-radius: 5px;
+            margin: 50px;
+        }
+
+        .run {
+            -webkit-animation: run 5s;
+            animation: run 5s;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes run {
+            0% {
+                background: -webkit-radial-gradient(310 83, #000 0%, blueviolet 100%);
+                background: radial-gradient(310 83, #000 0%, blueviolet 100%);
+            }
+            50% {
+                background: -webkit-radial-gradient(310 83, #000 50%, blueviolet 50%);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class='btn'>按钮</button>
+    <script>
+        (function () {
+            var btn = document.getElementsByClassName('btn')[0];
+            // console.log(btn.offsetLeft, btn.offsetTop);
+            var left = btn.offsetLeft;
+            var top = btn.offsetTop;
+            btn.addEventListener('click', function (e) {
+                left = e.offsetX;
+                top = e.offsetY;
+                console.log(left, top);
+                var animate = `@keyframes run1 {
+                    0% {
+                        background: -webkit-radial-gradient(${left} ${top}, #000 0%, blueviolet 100%);
+                        background: radial-gradient(${left} ${top}, #000 0%, blueviolet 100%);
+                    }
+                    50% {
+                        background: -webkit-radial-gradient(${left} ${top}, #000 50%, blueviolet 50%);
+                    }
+                }`;
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = animate;
+                // document.getElementsByTagName('head')[0].appendChild(style);
+                setTimeout(function () {
+                    btn.setAttribute('class', 'btn run');
+                }, 0)
+            }, false);
+        })()
+    </script>
+</body>
+
+</html>
