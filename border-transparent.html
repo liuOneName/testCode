@@ -1,22 +1,354 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>border-transparent</title>
   <style>
-    .border{
-      margin: 20px;
-      height: 100px;
+    .border::after {
+      content: ' ';
+      /* margin: 20px; */
+      /* height: 100px; */
+      width: 20px;
       background-color: pink;
-      border: 1px solid #000;
+      border-top: 10px solid #000;
+      border-right: 10px solid transparent;
+      border-left: 10px solid transparent;
+    }
+
+    .none {
+      /* display: none; */
+      background-color: pink;
+      position: relative;
+      overflow: hidden;
+      animation: 0ms first;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes first {
+      0% {
+        display: none;
+      }
+      100% {
+        display: none;
+      }
+    }
+
+    .getheight {
+      position: absolute;
+    }
+
+    .active {
+      position: relative;
+      overflow: hidden;
+      background-color: pink;
+      display: block;
+      animation: 300ms active_div;
+      animation-fill-mode: forwards;
+    }
+
+    .noactive {
+      position: relative;
+      overflow: hidden;
+      background-color: pink;
+      animation: 300ms _active_div;
+      animation-fill-mode: forwards;
+    }
+
+    .i {
+      animation: 300ms active_i;
+      animation-fill-mode: forwards;
+    }
+
+    .no {
+      animation: 300ms _active_i;
+      animation-fill-mode: forwards;
+    }
+
+    /* @keyframes active_div {
+      0% {
+        height: 0px;
+        opacity: 0;
+      }
+      100% {
+        height: 200px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes _active_div {
+      0% {
+        height: 200px;
+        opacity: 1;
+      }
+      100% {
+        height: 0px;
+        display: none;
+        opacity: 0;
+      }
+    } */
+
+    @keyframes active_i {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(90deg);
+      }
+    }
+
+    @keyframes _active_i {
+      0% {
+        transform: rotate(90deg);
+      }
+      100% {
+        transform: rotate(0);
+      }
+    }
+
+    .hover-div {
+      position: fixed;
+      background-color: #fff;
+      box-shadow: 0 0 2px 3px #eee;
+      padding: 10px;
+      margin: 10px;
+      border: 1px solid #ddd;
+      display: none;
+    }
+
+    .hover {
+      position: relative;
+      background-color: pink;
+      padding: 10px;
+      margin: 10px;
+      display: inline-block;
+      border: 5px solid red;
+    }
+
+    .show_div {
+      position: fixed;
+      display: block;
+      animation: 300ms showdiv;
+      animation-fill-mode: forwards;
+    }
+
+    ._show_div {
+      position: fixed;
+      display: block;
+      animation: 300ms __show_div;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes _showdiv {
+      100% {
+        opacity: 1;
+        margin: 10px 10px 10px 30px;
+      }
+    }
+
+    .hide_div {
+      position: fixed;
+      display: block;
+      animation: 300ms hidediv;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes showdiv {
+      0% {
+        opacity: 0;
+        margin: 10px;
+      }
+      100% {
+        opacity: 1;
+        margin: 10px 10px 10px 30px;
+      }
+    }
+
+    @keyframes hidediv {
+      0% {
+        opacity: 1;
+        margin: 10px 10px 10px 30px;
+      }
+      100% {
+        opacity: 0;
+        margin: 10px;
+      }
+    }
+    .display{
+      display: none;
     }
   </style>
 </head>
+
 <body>
+  <!-- 伪类三角形 -->
   <div class="border">
 
   </div>
+  <hr/>
+  <!-- 折叠面板 -->
+  <div style='background-color: blanchedalmond;padding: 10px;'>
+    <div class="zd">
+      <i style="display: inline-block;">></i>
+      折叠
+    </div>
+    <div class="none">
+      <div class="getheight">
+        <section>
+          在实现折叠动画时，有一个难点，就是在动画 改变折叠部分高度时，不知道要展示多高，才刚刚吧折叠元素完全展示出来，但是因为元素的是 被 display: none 掉 了，用js也无法获取到元素的高度，因此获取高度的方式有
+          <ol>
+            <li>
+              用jQuery 的 height() 方法来获取，好像可以获取到隐藏元素的高度。不行的话也有相应的jquery 插件 jquery.actual.js 可以获取隐藏元素的高度
+            </li>
+            <li>
+              网上看到一种方式，将元素 display: none 的元素 样式 先设置为 visibility:hidden;position: absolute 让他脱离文档流并且隐藏，在获取元素的高度，当获取到 元素的高度后，将元素的样式 还原为 display:
+              none; position: realative 这种形式。
+            </li>
+            <li>
+              我在这里用的方式是：现将隐藏元素的子元素再用一个div 包裹一次，并将div 的position 设置为 absolute 让他 脱离文档流， 但不要改变他的位置，再初始化 隐藏元素的时候，用动画displa：none 并保持在最后一帧的方式隐藏元素，之后获取隐藏
+              元素 子 div 的高度 就可以了。但是有一个坏处，元素子 div 一直处于渲染状态， 应该可以获取到 height 之后，把 position 改为 relative。
+            </li>
+          </ol>
+        </section>
+        <p>折叠内容</p>
+        <p>折叠内容</p>
+        <p>折叠内容</p>
+        <p>折叠内容</p>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <!-- hover 显示 -->
+  <div>
+    <div class="hover-container">
+      <span class="hover-span1 hover">hover me</span>
+      <br/>
+      <span class="hover-span2 hover">hover me</span>
+    </div>
+    <div class="hover-div">
+      hover show div
+    </div>
+  </div>
+  <script>
+    //折叠动画实现
+    (function () {
+      var zd = document.querySelector('.zd');
+      var none = document.querySelector('.none');
+      var i = document.querySelector('i');
+      //获取高度
+      var _height = document.querySelector('.getheight').offsetHeight;
+      console.log(_height);
+      //创建动画
+      if (!document.querySelector('.addstyle')) {
+        var style = document.createElement('style');
+        style.setAttribute('class', 'addstyle');
+        style.innerHTML = `@keyframes active_div {
+      0% {
+        height: 0px;
+        opacity: 0;
+      }
+      100% {
+        height: ${_height + 'px'};
+        opacity: 1;
+      }
+    }
+
+    @keyframes _active_div {
+      0% {
+        height: ${_height + 'px'};
+        opacity: 1;
+      }
+      100% {
+        height: 0px;
+        display: none;
+        opacity: 0;
+      }
+    }`;
+        //获取head 插入style
+        var head = document.querySelector('head');
+        head.appendChild(style);
+      }
+      zd.addEventListener('click', function () {
+        var i_class = i.getAttribute('class');
+
+        setTimeout(function () {
+          if (i_class && i_class.indexOf('i') > -1) {
+            i.setAttribute('class', 'no');
+            none.setAttribute('class', 'noactive');
+          } else {
+            i.setAttribute('class', 'i');
+            none.setAttribute('class', 'none active');
+          }
+        }, 0)
+      }, false)
+    })();
+    // hover 显 隐 动画实现
+    (function () {
+      var hover = document.querySelectorAll('.hover');
+      var hover_div = document.querySelector('.hover-div');
+      function addclass() {
+        // console.log(e);
+        var top = this.offsetTop + this.offsetHeight / 2;
+        var left = this.offsetLeft + this.offsetWidth;
+        hover_div.style.top = top - 30 + 'px';
+        hover_div.style.left = left - 20 + 'px';
+        // console.log(hover[0].offsetTop, hover[0].offsetLeft, hover[0].offsetWidth, hover[0].offsetHeight);
+        hover_div.setAttribute('class', 'hover-div show_div')
+      }
+      function removeclass() {
+        hover_div.setAttribute('class', 'hover-div hide_div')
+      }
+      function addAnimation(dom) {
+        dom.addEventListener('mouseover', addclass, false);
+        dom.addEventListener('mouseout', removeclass, false);
+      }
+      addAnimation(hover[0]);
+      addAnimation(hover[1]);
+      hover_div.addEventListener('mouseover', function (e) {
+        // this.style.animationPlayState = 'paused';
+        var computedStyle = window.getComputedStyle(hover_div, null);
+        var left = computedStyle.marginLeft;
+        var opacity = computedStyle.opacity;
+        console.log(computedStyle.opacity, computedStyle.marginLeft)
+        var head = document.querySelector('head');
+        var style = document.querySelector('._show__div');
+        if (style) {
+          style.remove();
+        }
+        style = document.createElement('style');
+        style.setAttribute('class', '_show__div');
+        style.innerHTML = `
+        @keyframes __show_div {
+      0% {
+        opacity: ${opacity};
+        margin: 10px 10px 10px ${left};
+      }
+      100% {
+        opacity: 1;
+        margin: 10px 10px 10px 30px;
+        
+      }
+    }`;
+        head.appendChild(style);
+        setTimeout(function () {
+          hover_div.setAttribute('class', 'hover-div _show_div');
+        }, 0)
+        // this.style.animationPlayState = 'running';
+        // this.style.animationDirection = 'reverse';
+      }, false)
+      hover_div.addEventListener('mouseout', function (e) {
+        this.setAttribute('class', 'hover-div hide_div');
+      }, false)
+      hover_div.addEventListener('animationend', function (e) {
+        if (e.animationName === 'hidediv') {
+          console.log('动画执行完成');
+          this.setAttribute('class', 'display');
+        }
+      }, false)
+    })()
+  </script>
 </body>
+
 </html>
